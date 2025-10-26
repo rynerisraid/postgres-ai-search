@@ -16,6 +16,7 @@ RUN apt update && apt install -y \
     git \
     cmake \
     libicu-dev \
+    postgresql-server-dev-15 \
     && rm -rf /var/lib/apt/lists/*
 
 # ==============================
