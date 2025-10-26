@@ -22,20 +22,23 @@ RUN apt-get update && \
 # 1. 安装 SCWS（zhparser 依赖）
 # ==============================
 WORKDIR /tmp
-RUN wget http://www.xunsearch.com/scws/down/scws-${SCWS_VERSION}.tar.bz2 && \
-    tar -xjf scws-${SCWS_VERSION}.tar.bz2 && \
+COPY scws-${SCWS_VERSION}.tar.bz2 .
+RUN tar -xjf scws-${SCWS_VERSION}.tar.bz2 && \
     cd scws-${SCWS_VERSION} && \
     ./configure --prefix=/usr/local/scws && \
     make && make install && \
     ln -sf /usr/local/scws/bin/scws /usr/bin/scws
 
 # 安装中文词典
+COPY scws-dict-chs-utf8.tar.bz2 /tmp/scws-dict-chs-utf8.tar.bz2
 RUN mkdir -p /usr/local/scws/etc && \
-    wget -O /usr/local/scws/etc/dict.utf8.xdb http://www.xunsearch.com/scws/down/scws-dict-chs-utf8.tar.bz2 && \
+    cp /tmp/scws-dict-chs-utf8.tar.bz2 /usr/local/scws/etc/dict.utf8.xdb && \
     cd /usr/local/scws/etc && \
     tar -xjf dict.utf8.xdb && \
     rm -f dict.utf8.xdb
 
+# 设置动态库路径（确保 scws 能被找到）
+ENV LD_LIBRARY_PATH=/usr/local/scws/lib:$LD_LIBRARY_PATH
 # ==============================
 # 2. 安装 zhparser
 # ==============================
@@ -57,8 +60,7 @@ RUN git clone https://github.com/amutu/zhparser.git && \
 #    cd age && \
 #    make && make install
 
-# 设置动态库路径（确保 scws 能被找到）
-ENV LD_LIBRARY_PATH=/usr/local/scws/lib:$LD_LIBRARY_PATH
+
 
 # ==============================
 # 5. 添加 PostgreSQL 初始化脚本
