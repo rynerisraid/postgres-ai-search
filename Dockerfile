@@ -1,0 +1,69 @@
+# 使用官方 PostgreSQL 15 镜像作为基础
+FROM postgres:15
+
+# 设置构建参数（可选）
+ENV SCWS_VERSION=1.2.3
+ENV PGVECTOR_VERSION=v0.7.4
+ENV AGE_VERSION=1.5.0
+
+# 安装编译依赖和工具
+RUN apt-get update && \
+    apt-get install -y \
+        build-essential \
+        wget \
+        git \
+        ca-certificates \
+        libreadline-dev \
+        zlib1g-dev \
+        curl \
+        && rm -rf /var/lib/apt/lists/*
+
+# ==============================
+# 1. 安装 SCWS（zhparser 依赖）
+# ==============================
+WORKDIR /tmp
+RUN wget http://www.xunsearch.com/scws/down/scws-${SCWS_VERSION}.tar.bz2 && \
+    tar -xjf scws-${SCWS_VERSION}.tar.bz2 && \
+    cd scws-${SCWS_VERSION} && \
+    ./configure --prefix=/usr/local/scws && \
+    make && make install && \
+    ln -sf /usr/local/scws/bin/scws /usr/bin/scws
+
+# 安装中文词典
+RUN mkdir -p /usr/local/scws/etc && \
+    wget -O /usr/local/scws/etc/dict.utf8.xdb http://www.xunsearch.com/scws/down/scws-dict-chs-utf8.tar.bz2 && \
+    cd /usr/local/scws/etc && \
+    tar -xjf dict.utf8.xdb && \
+    rm -f dict.utf8.xdb
+
+# ==============================
+# 2. 安装 zhparser
+# ==============================
+RUN git clone https://github.com/amutu/zhparser.git && \
+    cd zhparser && \
+    make && make install
+
+# ==============================
+# 3. 安装 pgvector
+# ==============================
+#RUN git clone --branch ${PGVECTOR_VERSION} https://github.com/pgvector/pgvector.git && \
+#    cd pgvector && \
+#    make && make install
+
+# ==============================
+# 4. 安装 Apache AGE
+# ==============================
+#RUN git clone --branch ${AGE_VERSION} https://github.com/apache/age.git && \
+#    cd age && \
+#    make && make install
+
+# 设置动态库路径（确保 scws 能被找到）
+ENV LD_LIBRARY_PATH=/usr/local/scws/lib:$LD_LIBRARY_PATH
+
+# ==============================
+# 5. 添加 PostgreSQL 初始化脚本
+# ==============================
+#COPY init-extensions.sql /docker-entrypoint-initdb.d/
+
+# 暴露 PostgreSQL 默认端口
+EXPOSE 5432
