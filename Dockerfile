@@ -38,7 +38,9 @@ RUN mkdir -p /usr/local/scws/etc && \
     rm -f dict.utf8.xdb
 
 # 设置动态库路径（确保 scws 能被找到）
-ENV LD_LIBRARY_PATH=/usr/local/scws/lib:$LD_LIBRARY_PATH
+RUN echo '/usr/local/scws/lib' > /etc/ld.so.conf.d/scws.conf && \
+    ldconfig
+
 # ==============================
 # 2. 安装 zhparser
 # ==============================
