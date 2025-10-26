@@ -46,6 +46,7 @@ RUN echo '/usr/local/scws/lib' > /etc/ld.so.conf.d/scws.conf && \
 # ==============================
 RUN git clone https://github.com/amutu/zhparser.git && \
     cd zhparser && \
+    export C_INCLUDE_PATH=/usr/local/scws/include/scws:$C_INCLUDE_PATH && \
     make && make install
 
 # ==============================
