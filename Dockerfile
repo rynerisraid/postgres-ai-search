@@ -44,13 +44,12 @@ RUN mkdir -p /usr/local/scws/etc && \
 RUN echo '/usr/local/scws/lib' > /etc/ld.so.conf.d/scws.conf && \
     ldconfig
 
-# 添加 scws 路径
-ENV C_INCLUDE_PATH=/usr/local/scws/include/scws:$C_INCLUDE_PATH
 
 # ==============================
 # 2. 安装 zhparser
 # ==============================
-RUN git clone https://github.com/amutu/zhparser.git && \
+RUN export C_INCLUDE_PATH=/usr/local/scws/include:$C_INCLUDE_PATH && \
+    git clone https://github.com/amutu/zhparser.git && \
     cd zhparser && \
     make && make install
 
