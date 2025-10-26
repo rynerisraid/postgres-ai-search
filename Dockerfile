@@ -6,6 +6,10 @@ ENV SCWS_VERSION=1.2.3
 ENV PGVECTOR_VERSION=v0.7.4
 ENV AGE_VERSION=1.5.0
 
+# 修改 Debian 源为阿里云
+RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
+RUN sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
+
 # 安装编译依赖和工具
 RUN apt-get update && \
     apt-get install -y \
