@@ -16,6 +16,9 @@ RUN apt-get update && \
         libreadline-dev \
         zlib1g-dev \
         curl \
+        libscws-dev \  
+        postgresql-server-dev-15 \
+        cmake \
         && rm -rf /var/lib/apt/lists/*
 
 # ==============================
