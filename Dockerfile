@@ -53,7 +53,7 @@ RUN echo '/usr/local/scws/lib' > /etc/ld.so.conf.d/scws.conf && \
 # ==============================
 RUN git clone https://github.com/amutu/zhparser.git && \
     cd zhparser && \
-    make PG_CPPFLAGS="-I/usr/local/scws/include" && \
+    make PG_CPPFLAGS="-I/usr/local/scws/include/scws" && \
     make install
 # ==============================
 # 3. 安装 pgvector
