@@ -11,20 +11,12 @@ ENV AGE_VERSION=1.5.0
 # RUN sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
 
 # 安装编译依赖和工具
-RUN apt-get update && \
-    apt-get install -y \
-        build-essential \
-        wget \
-        git \
-        ca-certificates \
-        libreadline-dev \
-        libscws-dev \
-        scws \
-        zlib1g-dev \
-        curl \
-        postgresql-server-dev-15 \
-        cmake \
-        && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y \
+    build-essential \
+    git \
+    cmake \
+    libicu-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # ==============================
 # 1. 安装 SCWS（zhparser 依赖）
