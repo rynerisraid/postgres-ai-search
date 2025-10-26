@@ -18,6 +18,8 @@ RUN apt-get update && \
         git \
         ca-certificates \
         libreadline-dev \
+        libscws-dev \
+        scws \
         zlib1g-dev \
         curl \
         postgresql-server-dev-15 \
@@ -51,9 +53,9 @@ RUN echo '/usr/local/scws/lib' > /etc/ld.so.conf.d/scws.conf && \
 # ==============================
 # 2. 安装 zhparser
 # ==============================
-RUN git clone https://github.com/amutu/zhparser.git && \
+RUN git clone https://github.com/amutu/zhparser.git &&  \
     cd zhparser && \
-    make PG_CPPFLAGS="-I/usr/local/scws/include/scws" && \
+    SCWS_HOME=/usr/local/scws make && \
     make install
 # ==============================
 # 3. 安装 pgvector
