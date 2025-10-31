@@ -60,9 +60,9 @@ RUN git clone --branch ${PGVECTOR_VERSION} https://github.com/pgvector/pgvector.
 # ==============================
 # 4. 安装 Apache AGE
 # ==============================
-#RUN git clone --branch ${AGE_VERSION} https://github.com/apache/age.git && \
-#    cd age && \
-#    make && make install
+RUN git clone --branch ${AGE_VERSION} https://github.com/apache/age.git && \
+   cd age && \
+   make && make install
 
 
 
