@@ -13,6 +13,10 @@ ENV AGE_VERSION=1.5.0
 # 安装编译依赖和工具
 RUN apt update && apt install -y \
     build-essential \
+    flex \
+    bison \
+    libreadline-dev \
+    zlib1g-dev \
     git \
     cmake \
     libicu-dev \
