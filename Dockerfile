@@ -53,9 +53,9 @@ RUN git clone https://github.com/amutu/zhparser.git &&  \
 # ==============================
 # 3. 安装 pgvector
 # ==============================
-#RUN git clone --branch ${PGVECTOR_VERSION} https://github.com/pgvector/pgvector.git && \
-#    cd pgvector && \
-#    make && make install
+RUN git clone --branch ${PGVECTOR_VERSION} https://github.com/pgvector/pgvector.git && \
+   cd pgvector && \
+   make && make install
 
 # ==============================
 # 4. 安装 Apache AGE
