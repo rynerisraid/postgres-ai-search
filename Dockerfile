@@ -69,7 +69,7 @@ RUN git clone --branch release/PG15/1.5.0 https://github.com/apache/age.git && \
 # ==============================
 # 5. 添加 PostgreSQL 初始化脚本
 # ==============================
-#COPY init-extensions.sql /docker-entrypoint-initdb.d/
+COPY init-extensions.sql /docker-entrypoint-initdb.d/
 
 # 暴露 PostgreSQL 默认端口
 EXPOSE 5432

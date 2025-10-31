@@ -16,4 +16,6 @@
 -- limitations under the License.
 --
 
+CREATE EXTENSION vector;
+CREATE EXTENSION zhparser;
 CREATE EXTENSION age;
