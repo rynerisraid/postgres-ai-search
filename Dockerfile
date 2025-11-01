@@ -70,7 +70,9 @@ RUN git clone --branch release/PG15/1.5.0 https://github.com/apache/age.git && \
 
 COPY docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-initdb.d/00-create-extension-age.sql
 
+# 设置 PostgreSQL 配置
 ENV PATH="/usr/lib/postgresql/15/bin:$PATH"
+ENV POSTGRES_INITDB_ARGS="--locale=zh_CN.UTF-8"
 
 # Use absolute path to postgres binary to avoid PATH/resolution issues in the entrypoint
 CMD ["postgres", "-c", "shared_preload_libraries=age"]
