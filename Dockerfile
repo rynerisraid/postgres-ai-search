@@ -7,11 +7,11 @@ ENV PGVECTOR_VERSION=v0.7.4
 ENV AGE_VERSION=1.5.0
 
 # 修改 Debian 源为阿里云
-# RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
-# RUN sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
+RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
+RUN sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
 
 # 安装编译依赖和工具
-RUN apt update && apt install -y \
+RUN apt-get update && apt install -y \
     build-essential \
     flex \
     bison \
@@ -73,6 +73,7 @@ COPY docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-i
 # 设置 PostgreSQL 配置
 ENV PATH="/usr/lib/postgresql/15/bin:$PATH"
 ENV POSTGRES_INITDB_ARGS="--locale=zh_CN.UTF-8"
-
+ENV PGDATA="/var/lib/postgresql/data"
+ENV POSTGRES_USER=postgres
 # Use absolute path to postgres binary to avoid PATH/resolution issues in the entrypoint
 CMD ["postgres", "-c", "shared_preload_libraries=age"]
