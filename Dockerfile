@@ -68,6 +68,6 @@ RUN git clone --branch release/PG15/1.5.0 https://github.com/apache/age.git && \
    cd age && \
    make && make install
 
-COPY docker/docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-initdb.d/00-create-extension-age.sql
+COPY /docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-initdb.d/00-create-extension-age.sql
 
 CMD ["postgres", "-c", "shared_preload_libraries=age"]
