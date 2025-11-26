@@ -1,1 +1,2 @@
 CREATE EXTENSION age;
+CREATE EXTENSION pg_bestmatch;

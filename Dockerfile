@@ -21,6 +21,7 @@ RUN apt-get update && apt install -y \
     cmake \
     libicu-dev \
     postgresql-server-dev-15 \
+    postgresql-15-pg-bestmatch \
     && rm -rf /var/lib/apt/lists/*
 
 # ==============================
@@ -75,4 +76,4 @@ ENV PATH="/usr/lib/postgresql/15/bin:$PATH"
 ENV PGDATA="/var/lib/postgresql/data"
 ENV POSTGRES_USER=postgres
 # Use absolute path to postgres binary to avoid PATH/resolution issues in the entrypoint
-CMD ["postgres", "-c", "shared_preload_libraries=age"]
+CMD ["postgres", "-c", "shared_preload_libraries=age,pg_bestmatch"]
