@@ -69,21 +69,6 @@ RUN git clone --branch release/PG15/1.5.0 https://github.com/apache/age.git && \
    cd age && \
    make && make install
 
-# ==============================
-# 5. 安装 pg_bestmatch
-# ==============================
-# 安装 Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-ENV PATH="/root/.cargo/bin:$PATH"
-
-# 安装 pgrx CLI 工具
-RUN cargo install cargo-pgrx --version v0.12.0-alpha.1
-
-# 初始化 pgrx 并构建安装 pg_bestmatch (仅针对 PostgreSQL 15)
-RUN git clone https://github.com/tensorchord/pg_bestmatch.rs.git && \
-   cd pg_bestmatch.rs && \
-   cargo pgrx init --pg15=/usr/lib/postgresql/15/bin/pg_config && \
-   cargo pgrx install --release
 
 COPY docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-initdb.d/00-create-extension-age.sql
 
@@ -92,4 +77,4 @@ ENV PATH="/usr/lib/postgresql/15/bin:$PATH"
 ENV PGDATA="/var/lib/postgresql/data"
 ENV POSTGRES_USER=postgres
 # Use absolute path to postgres binary to avoid PATH/resolution issues in the entrypoint
-CMD ["postgres", "-c", "shared_preload_libraries=age,pg_bestmatch"]
+CMD ["postgres", "-c", "shared_preload_libraries=age"]
