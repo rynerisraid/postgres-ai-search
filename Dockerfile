@@ -76,10 +76,17 @@ RUN git clone --branch release/PG15/1.5.0 https://github.com/apache/age.git && \
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:$PATH"
 
-# 构建并安装 pg_bestmatch
+# 安装 pgrx CLI 工具
+RUN cargo install cargo-pgrx --version 0.11.3
+
+# 初始化 pgrx 并构建安装 pg_bestmatch
 RUN git clone https://github.com/tensorchord/pg_bestmatch.rs.git && \
    cd pg_bestmatch.rs && \
-   cargo pgrx install --pg-config $(pg_config --bindir)/pg_config
+   cargo pgrx init --pg15 $(pg_config --bindir)/pg_config && \
+   cargo pgrx package --pg-version pg15 && \
+   cp target/release/pg_bestmatch.so $(pg_config --sharedir)/extension/ && \
+   cp pg_bestmatch.control $(pg_config --sharedir)/extension/ && \
+   cp sql/pg_bestmatch--*.sql $(pg_config --sharedir)/extension/
 
 COPY docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-initdb.d/00-create-extension-age.sql
 
