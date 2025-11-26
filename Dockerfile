@@ -21,7 +21,7 @@ RUN apt-get update && apt install -y \
     cmake \
     libicu-dev \
     postgresql-server-dev-15 \
-    postgresql-15-pg-bestmatch \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # ==============================
@@ -68,6 +68,18 @@ RUN git clone --branch ${PGVECTOR_VERSION} https://github.com/pgvector/pgvector.
 RUN git clone --branch release/PG15/1.5.0 https://github.com/apache/age.git && \
    cd age && \
    make && make install
+
+# ==============================
+# 5. 安装 pg_bestmatch
+# ==============================
+# 安装 Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:$PATH"
+
+# 构建并安装 pg_bestmatch
+RUN git clone https://github.com/tensorchord/pg_bestmatch.rs.git && \
+   cd pg_bestmatch.rs && \
+   cargo pgrx install --pg-config $(pg_config --bindir)/pg_config
 
 COPY docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-initdb.d/00-create-extension-age.sql
 
