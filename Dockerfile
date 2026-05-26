@@ -4,7 +4,7 @@ FROM postgres:15
 # 设置构建参数（可选）
 ENV SCWS_VERSION=1.2.3
 ENV PGVECTOR_VERSION=v0.7.4
-ENV AGE_VERSION=1.5.0
+# ENV AGE_VERSION=1.5.0
 
 # 修改 Debian 源为阿里云
 #RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
@@ -63,18 +63,18 @@ RUN git clone --branch ${PGVECTOR_VERSION} https://github.com/pgvector/pgvector.
    make && make install
 
 # ==============================
-# 4. 安装 Apache AGE
+# 4. 安装 Apache AGE (暂时注释，当前只需要 PGVector + Zhparser)
 # ==============================
-RUN git clone --branch release/PG15/1.5.0 https://github.com/apache/age.git && \
-   cd age && \
-   make && make install
+# RUN git clone --branch release/PG15/1.5.0 https://github.com/apache/age.git && \
+#    cd age && \
+#    make && make install
 
 
-COPY docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-initdb.d/00-create-extension-age.sql
+# COPY docker-entrypoint-initdb.d/00-create-extension-age.sql /docker-entrypoint-initdb.d/00-create-extension-age.sql
 
 # 设置 PostgreSQL 配置
 ENV PATH="/usr/lib/postgresql/15/bin:$PATH"
 ENV PGDATA="/var/lib/postgresql/data"
 ENV POSTGRES_USER=postgres
 # Use absolute path to postgres binary to avoid PATH/resolution issues in the entrypoint
-CMD ["postgres", "-c", "shared_preload_libraries=age"]
+CMD ["postgres"]
