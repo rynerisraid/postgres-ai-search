@@ -8,16 +8,19 @@
 ## 功能特点
 
 ### 中文全文检索
+
 - 集成 [zhparser](https://github.com/amutu/zhparser) 中文全文检索插件
 - 使用 [SCWS](http://www.xunsearch.com/scws/) 中文分词引擎
 - 内置中文词典，支持开箱即用的中文处理能力
 
 ### 向量搜索
+
 - 集成 [pgvector](https://github.com/pgvector/pgvector) 向量相似度搜索扩展
 - 支持向量存储和相似性查询
 - 适用于 AI 应用中的语义搜索场景
 
 ### 图数据库
+
 - 集成 [Apache AGE](https://age.apache.org/) 图数据库扩展
 - 支持图数据存储和查询
 - 兼容 openCypher 图查询语言
@@ -55,9 +58,12 @@ psql -h localhost -p 5432 -U postgres
 ### 中文全文检索
 
 ```sql
--- 测试中文分词
-SELECT to_tsvector('zhparser', '这是一个简单的测试');
 
+-- 测试中文分词
+CREATE EXTENSION zhparser; -- 启用 Zhparser 扩展
+CREATE TEXT SEARCH CONFIGURATION chinese (PARSER = zhparser); -- 中文全文检索
+ALTER TEXT SEARCH CONFIGURATION chinese ADD MAPPING FOR n,v,a,i,e,l WITH simple; -- 修改词性
+select ts_token_type('zhparser'); -- 词性列表
 -- 创建带有中文全文索引的表
 CREATE TABLE articles (
     id SERIAL PRIMARY KEY,
@@ -71,7 +77,7 @@ CREATE TRIGGER tsvectorupdate BEFORE INSERT OR UPDATE ON articles
 FOR EACH ROW EXECUTE FUNCTION tsvector_update_trigger(tsv, 'pg_catalog.chinese_zh', content);
 
 -- 插入测试数据
-INSERT INTO articles (title, content) VALUES 
+INSERT INTO articles (title, content) VALUES
 ('标题一', '这是一篇关于人工智能的文章'),
 ('标题二', '这篇文章讨论机器学习算法');
 
@@ -89,7 +95,7 @@ CREATE TABLE items (
 );
 
 -- 插入向量数据
-INSERT INTO items (embedding) VALUES 
+INSERT INTO items (embedding) VALUES
 ('[1,2,3]'),
 ('[4,5,6]');
 
@@ -136,23 +142,23 @@ $$) AS (a agtype, b agtype);
 
 ### 环境变量
 
-| 变量 | 默认值 | 描述 |
-|------|--------|------|
+| 变量                | 默认值   | 描述               |
+| ------------------- | -------- | ------------------ |
 | `POSTGRES_PASSWORD` | 无默认值 | 数据库超级用户密码 |
-| `POSTGRES_USER` | postgres | 数据库超级用户名 |
-| `POSTGRES_DB` | postgres | 默认数据库名 |
+| `POSTGRES_USER`     | postgres | 数据库超级用户名   |
+| `POSTGRES_DB`       | postgres | 默认数据库名       |
 
 更多环境变量请参考 [PostgreSQL Docker 官方文档](https://hub.docker.com/_/postgres)。
 
 ### 版本控制
 
-| 组件 | 版本 |
-|------|------|
-| PostgreSQL | 15 |
-| SCWS | 1.2.3 |
-| zhparser | 最新主分支 |
-| pgvector | v0.7.4 |
-| Apache AGE | 1.5.0 |
+| 组件       | 版本       |
+| ---------- | ---------- |
+| PostgreSQL | 15         |
+| SCWS       | 1.2.3      |
+| zhparser   | 最新主分支 |
+| pgvector   | v0.7.4     |
+| Apache AGE | 1.5.0      |
 
 ## 数据持久化
 
@@ -178,6 +184,7 @@ docker logs postgres-ai
 ### 连接问题
 
 如果遇到连接问题，请确保：
+
 1. 容器正在运行 (`docker ps`)
 2. 端口映射正确 (`-p 5432:5432`)
 3. 密码设置正确
